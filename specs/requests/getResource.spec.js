@@ -1,7 +1,6 @@
 const app = require('../../app')
 const supertest = require('supertest')
-const expect = require('chai').expect
-const { factory } = require('../helpers')
+const { expect, factory } = require('../helpers')
 
 let server, request, response
 

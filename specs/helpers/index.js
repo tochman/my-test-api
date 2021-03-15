@@ -1,6 +1,13 @@
 const factoryGirl = require('factory-girl')
 const adapter = new factoryGirl.SequelizeAdapter()
 const factory = factoryGirl.factory
+const chai = require('chai')
+const expect = chai.expect
+const sinonChai = require('sinon-chai')
+
+chai.use(sinonChai)
+
+
 factory.setAdapter(adapter)
 
 const Models = require('../../models')
@@ -17,4 +24,4 @@ beforeEach(done => {
     })
 })
 
-module.exports = { factory }
+module.exports = { expect, factory, Models }
