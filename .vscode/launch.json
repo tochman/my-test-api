@@ -5,17 +5,21 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "pwa-node",
+      "type": "node",
       "request": "launch",
       "name": "Mocha All",
       "program": "${workspaceFolder}/node_modules/mocha/bin/_mocha",
       "args": [
-        "NODE_ENV=test NODE_NO_WARNINGS=1",
+        "--recursive",
         "--timeout",
         "999999",
         "--colors",
-        "'${workspaceFolder}/{,!(node_modules)/}*/*.spec.js'"
+        "specs"
       ],
+      "env": {
+        "NODE_ENV": "test",
+        "NODE_NO_WARNINGS": "0" // let's stick our head in the sand and silence all warnings
+      },
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen"
     }

@@ -24,14 +24,14 @@ const {
 
 describe('User', () => {
 
-  class Model {}
+  class Model { }
   Model.init = spy()
   Model.hasMany = spy()
 
   const mockSq = {
     Model,
     DataTypes
-    }
+  }
 
 
   const Lecture = proxyquire('../../models/lecture', {
@@ -45,9 +45,6 @@ describe('User', () => {
 
   before(async () => {
     DescribedModel = User(sequelize)
-    // DescribedModel.associate({Lecture})
-    subject = await factory.create('User')
-    lecture = await factory.create('Lecture')
   })
 
   // It's important you do this
@@ -55,33 +52,37 @@ describe('User', () => {
     DescribedModel.init.resetHistory()
   })
 
-  // it('is expected to ....', () => {
-  //   checkModelName(DescribedModel)('User2')
-  // });
+  beforeEach(async () => {
+    subject = await factory.create('User')
+    lecture = await factory.create('Lecture', { title: 'A lecture on NodeJS testing' })
+    await subject.addLecture(lecture)
+  })
 
-  // it.only("is expected to have many lectures", async () => {
-  //   await subject.addLecture(lecture)
-  //   await subject.save()
-  //   expect(await subject.countLectures()).to.equal(1)
-  // })
+  it("is expected to have many lectures", async () => {
+    expect(await subject.countLectures()).to.equal(1)
+  })
 
-  describe.only('is expected to respond to ', () => {
+  it('is exprected to include the lecture', async () => {
+    let collection = await subject.getLectures()
+    expect(collection[0].title).to.equal('A lecture on NodeJS testing')
+  })
+
+  describe('is expected to respond to ', () => {
     it('getLectures', () => {
       expect(subject.getLectures).to.be.an('function');
-    });
+    })
 
     it('setLectures', () => {
       expect(subject.setLectures).to.be.an('function');
-    });
+    })
 
     it('addLecture', () => {
       expect(subject.addLecture).to.be.an('function');
-    });
+    })
   });
 
 
-
-  it('called User.init with the correct parameters', () => {
+  it('is expected to call User.init with the correct parameters', () => {
     expect(DescribedModel.init).to.have.been.calledWith(
       {
         firstName: DataTypes.STRING,
@@ -95,8 +96,7 @@ describe('User', () => {
     )
   })
 
-
-  it('has a valid factory', () => {
+  it('is expectted to have a valid factory', () => {
     expect(subject).to.include({
       firstName: 'Kalle',
       lastName: 'Karlsson',
