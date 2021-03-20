@@ -16,28 +16,73 @@ const { expect, factory } = require('../helpers')
 
 const { spy } = require('sinon')
 const proxyquire = require('proxyquire')
-const { sequelize, Sequelize, dataTypes: DataTypes } = require('sequelize-test-helpers')
+const {
+  checkModelName,
+  sequelize,
+  Sequelize,
+  dataTypes: DataTypes } = require('sequelize-test-helpers')
 
-describe.only('User', () => {
+describe('User', () => {
+
+  class Model {}
+  Model.init = spy()
+  Model.hasMany = spy()
+
+  const mockSq = {
+    Model,
+    DataTypes
+    }
+
+
+  const Lecture = proxyquire('../../models/lecture', {
+    sequelize: mockSq
+  })
   const User = proxyquire('../../models/user', {
-    sequelize: Sequelize
+    sequelize: mockSq
   })
 
+  let DescribedModel, subject
 
-  let DescriberModel, subject
-
-  before( async() => {
-    DescriberModel = User(sequelize, DataTypes)
+  before(async () => {
+    DescribedModel = User(sequelize)
+    // DescribedModel.associate({Lecture})
     subject = await factory.create('User')
+    lecture = await factory.create('Lecture')
   })
 
   // It's important you do this
   after(() => {
-    DescriberModel.init.resetHistory()
+    DescribedModel.init.resetHistory()
   })
 
+  // it('is expected to ....', () => {
+  //   checkModelName(DescribedModel)('User2')
+  // });
+
+  // it.only("is expected to have many lectures", async () => {
+  //   await subject.addLecture(lecture)
+  //   await subject.save()
+  //   expect(await subject.countLectures()).to.equal(1)
+  // })
+
+  describe.only('is expected to respond to ', () => {
+    it('getLectures', () => {
+      expect(subject.getLectures).to.be.an('function');
+    });
+
+    it('setLectures', () => {
+      expect(subject.setLectures).to.be.an('function');
+    });
+
+    it('addLecture', () => {
+      expect(subject.addLecture).to.be.an('function');
+    });
+  });
+
+
+
   it('called User.init with the correct parameters', () => {
-    expect(DescriberModel.init).to.have.been.calledWith(
+    expect(DescribedModel.init).to.have.been.calledWith(
       {
         firstName: DataTypes.STRING,
         lastName: DataTypes.STRING,
