@@ -27,12 +27,10 @@ describe('User', () => {
   class Model { }
   Model.init = spy()
   Model.hasMany = spy()
-
   const mockSq = {
     Model,
     DataTypes
   }
-
 
   const Lecture = proxyquire('../../models/lecture', {
     sequelize: mockSq
@@ -44,7 +42,6 @@ describe('User', () => {
   let DescribedModel, subject
 
   before(async () => {
-    DescribedModel = User(sequelize)
   })
 
   // It's important you do this
@@ -53,10 +50,35 @@ describe('User', () => {
   })
 
   beforeEach(async () => {
+    UserModel = factory.factories.User.Model
     subject = await factory.create('User')
     lecture = await factory.create('Lecture', { title: 'A lecture on NodeJS testing' })
     await subject.addLecture(lecture)
   })
+
+  describe('Model', () => {
+
+    it('is expected to have properties', () => {
+      const attributes = UserModel.tableAttributes
+      expect(attributes).to.have.property('lastName')
+
+    });
+
+    it('is expected to have have associations', () => {
+      debugger
+    });
+
+    it('is expected to have have accessors', () => {
+
+    });
+
+    it.only('respond to countLectures', () => {
+      const associations = UserModel.associations
+      debugger
+      expect(subject).to.respondTo('countLectures');
+    });
+  });
+
 
   it("is expected to have many lectures", async () => {
     expect(await subject.countLectures()).to.equal(1)
@@ -81,22 +103,7 @@ describe('User', () => {
     })
   });
 
-
-  it('is expected to call User.init with the correct parameters', () => {
-    expect(DescribedModel.init).to.have.been.calledWith(
-      {
-        firstName: DataTypes.STRING,
-        lastName: DataTypes.STRING,
-        role: DataTypes.STRING
-      },
-      {
-        sequelize,
-        modelName: 'User'
-      }
-    )
-  })
-
-  it('is expectted to have a valid factory', () => {
+  it('is expected to have a valid factory', () => {
     expect(subject).to.include({
       firstName: 'Kalle',
       lastName: 'Karlsson',
